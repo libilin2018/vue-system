@@ -65,14 +65,15 @@ export default {
         this.counts = res.counts
         this.recent = res.recent
         this.time = parseInt(res.time)
-        this.drawEchart(jobs)
+        this.drawEchart(jobs, res.grow)
       })
     },
-    drawEchart(data) {
+    drawEchart(jobs, grow) {
+      console.log(grow)
       const pie = echarts.init(document.getElementById('pie'))
       const line = echarts.init(document.getElementById('line'))
       const lineOption = {
-        title: { text: '近七天数据' },
+        title: { text: '数据增长' },
         xAxis: {
           type: 'category',
           boundaryGap: false,
@@ -81,8 +82,11 @@ export default {
         yAxis: {
           type: 'value'
         },
+        tooltip: {
+          trigger: 'item'
+        },
         series: [{
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
+          data: grow.slice(-7),
           type: 'line',
           areaStyle: {
             color: '"#000'
@@ -110,7 +114,7 @@ export default {
           {
             name: '职位名称',
             type: 'pie',
-            data
+            data: jobs
           }
         ]
       }

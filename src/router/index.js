@@ -138,13 +138,13 @@ export const asyncRouterMap = [
       {
         path: 'admin-user',
         name: '用户管理',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/admin/user'),
         meta: { title: '用户管理', icon: 'admin-user', noCache: true }
       },
       {
         path: 'admin-publish',
         name: '信息发布',
-        component: () => import('@/views/wash/index'),
+        component: () => import('@/views/admin/publish'),
         meta: { title: '信息发布', icon: 'publish', noCache: true }
       }
     ]

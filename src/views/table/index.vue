@@ -106,13 +106,9 @@
         <el-form-item label="职位名称">
           <el-input v-model="jobForm.job" autocomplete="off"></el-input>
         </el-form-item>
-      </el-form>
-      <el-form :model="jobForm" label-width="120px">
         <el-form-item label="职位描述">
           <el-input v-model="jobForm.job_describe" type="textarea" rows="5"></el-input>
         </el-form-item>
-      </el-form>
-      <el-form :model="jobForm" label-width="120px">
         <el-form-item label="福利">
           <el-input v-model="jobForm.welfare" type="textarea"></el-input>
         </el-form-item>
@@ -165,7 +161,7 @@ export default {
   methods: {
     init() {
       const roles = this.$store.getters.roles
-      console.log(roles.includes('admin'))
+      // console.log(roles.includes('admin'))
       this.roles = roles
     },
     fetchData() {
@@ -227,19 +223,29 @@ export default {
     },
     handleDelClick(item, index, rows) {
       // 删除数据操作
-      this.listLoading = true
       const id = item.jobId
       const name = this.currentJob
       if (id) {
-        getRawDelete({ name, id }).then(res => {
-          // console.log(res)
-          this.listLoading = false
-          rows.splice(index, 1)
-          this.counts = this.counts - 1
-          // this.fetchData()
+        this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true
+          getRawDelete({ name, id }).then(res => {
+            this.listLoading = false
+            rows.splice(index, 1)
+            this.counts = this.counts - 1
+            // this.fetchData()
+            this.$message({
+              type: 'success',
+              message: '已删除'
+            })
+          })
+        }).catch(() => {
           this.$message({
-            type: 'success',
-            message: '已删除'
+            type: 'info',
+            message: '已取消删除'
           })
         })
       } else {
@@ -249,7 +255,14 @@ export default {
       }
     },
     handleSearch() {
-      this.getRawData(this.currentJob, this.page, undefined, this.inputContent)
+      const content = this.inputContent
+      if (!content) {
+        this.$message({
+          message: '内容为空，请输入！'
+        })
+        return
+      }
+      this.getRawData(this.currentJob, this.page, undefined, content)
     }
   }
 }

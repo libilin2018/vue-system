@@ -30,3 +30,27 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function userList(data) {
+  return request({
+    url: '/user/userList',
+    method: 'post',
+    data
+  })
+}
+
+export function changeRoles(data) {
+  return request({
+    url: '/user/changeRoles',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteUser(data) {
+  return request({
+    url: '/user/deleteUser',
+    method: 'post',
+    data
+  })
+}

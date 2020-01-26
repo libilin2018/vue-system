@@ -80,7 +80,7 @@ const actions = {
       commit('SET_ROLES', roles)
       // console.log(roles)
       const accessedRouters = asyncRouterMap.filter(v => {
-        if (roles.indexOf('admin') >= 0) return true
+        if (roles.indexOf('admin') >= 0 || roles.indexOf('super-admin') >= 0) return true
         if (hasPermission(roles, v)) {
           if (v.children && v.children.length > 0) {
             v.children = v.children.filter(child => {

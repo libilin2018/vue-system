@@ -73,6 +73,15 @@ div:focus {
 .primaryTxt {
   font-size: 30px;
 }
+
+.tag {
+  font-size: 12px;
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background-color: #0066cb;
+}
+
 a.primaryTxt:hover, a.primaryTxt:visited {
   color: #378e79;
 }
