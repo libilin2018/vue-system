@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter, asyncRouterMap } from '@/router'
+import { cloneDeep } from 'lodash'
 
 function hasPermission(roles, route) {
   if (route.meta && route.meta.roles) {
@@ -25,6 +26,9 @@ const mutations = {
   SET_NAME: (state, name) => {
     state.name = name
   },
+  SET_USERNAME: (state, username) => {
+    localStorage.setItem('username', username)
+  },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
@@ -44,7 +48,9 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
+        commit('SET_USERNAME', username)
         commit('SET_NAME', '')
+        commit('SET_ROUTERS', '')
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -79,7 +85,9 @@ const actions = {
       const { roles } = data
       commit('SET_ROLES', roles)
       // console.log(roles)
-      const accessedRouters = asyncRouterMap.filter(v => {
+      // 深拷贝复制
+      const routerMap = cloneDeep(asyncRouterMap)
+      const accessedRouters = routerMap.filter(v => {
         if (roles.indexOf('admin') >= 0 || roles.indexOf('super-admin') >= 0) return true
         if (hasPermission(roles, v)) {
           if (v.children && v.children.length > 0) {
@@ -107,6 +115,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
+        localStorage.removeItem('username')
+        localStorage.removeItem('info')
         removeToken()
         resetRouter()
         resolve()

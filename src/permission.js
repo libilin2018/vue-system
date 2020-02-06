@@ -34,6 +34,7 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           store.dispatch('user/getInfo').then(res => {
+            localStorage.setItem('info', JSON.stringify(res))
             const roles = res.roles
             store.dispatch('user/generateRoutes', { roles }).then(() => {
               const accessRoutes = store.getters.asyncRoutes

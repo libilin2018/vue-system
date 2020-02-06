@@ -35,7 +35,7 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="handleLookInfo(scope.row.info)">查看</el-button>
           <el-button v-permission="['super-admin']" type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button type="text" size="small" @click="handleDeleteUser(scope.row.username)">删除</el-button>
+          <el-button type="text" size="small" @click="handleDeleteUser(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -84,11 +84,6 @@ export default {
       currentUser: {}
     }
   },
-  computed: {
-    time() {
-      return formatTime(1579901105296)
-    }
-  },
   created() {
     this.getUserlist()
   },
@@ -96,6 +91,7 @@ export default {
     getUserlist() {
       const token = this.$store.getters.token
       userList({ token }).then(res => {
+        // console.log(res.message)
         this.userData = res.message
       })
     },
@@ -112,7 +108,17 @@ export default {
       this.roleList = user.info.roles
       this.dialogJobVisible2 = true
     },
-    handleDeleteUser(username) {
+    handleDeleteUser(user) {
+      const roles = this.$store.getters.roles
+      const userRoles = user.info.roles
+      if (!roles.includes('super-admin')) {
+        if (userRoles.includes('super-admin')) {
+          this.$message({ message: '你无权删除超级管理员' })
+          return
+        }
+      }
+      const username = user.username
+      console.log(username)
       this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

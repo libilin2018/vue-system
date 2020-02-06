@@ -1,51 +1,26 @@
 <template>
   <div class="app-container">
-    <div class="select">
-      <el-select
-        v-model="currentJob"
-        placeholder="请选择"
-        class="select-job"
-        @change="handleJobChange"
-      >
-        <el-option
-          v-for="item in jobOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
-    </div>
+    <select-job @draw="getMapData"></select-job>
     <div id="map"></div>
   </div>
 </template>
 
 <script>
 import echarts from 'echarts'
-import { getHomeData, getRequireTop10 } from '@/api/visual'
-import { formatSelectData } from '@/utils/index'
+import { getRequireTop10 } from '@/api/visual'
+import SelectJob from '@/components/SelectJob'
 
 export default {
+  components: {
+    SelectJob
+  },
   data() {
     return {
-      currentJob: '',
-      jobOptions: []
     }
   },
   mounted() {
-    this.init()
   },
   methods: {
-    init() {
-      getHomeData().then(res => {
-        res = res.message
-        const jobs = formatSelectData(res.jobs)
-        const currentJob = jobs[0].label
-        this.jobOptions = jobs
-        this.currentJob = currentJob
-        this.getMapData(currentJob)
-      })
-    },
     drawMap(name, data) {
       const oldMap = echarts.getInstanceByDom(document.getElementById('map'))
       if (oldMap) {
@@ -130,11 +105,8 @@ export default {
       }
       map.setOption(option)
     },
-    handleJobChange(val) {
-      this.getMapData(val)
-    },
     getMapData(name) {
-      console.log(name)
+      // console.log(name)
       getRequireTop10({ name }).then(res => {
         res = res.message
         this.drawMap(name, res)
@@ -145,9 +117,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
- .select {
-   padding-bottom: 20px;
- }
   #map {
     width: 90%;
     height: 600px;

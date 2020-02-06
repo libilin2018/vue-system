@@ -48,7 +48,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/dashboard',
     children: [{
-      path: 'dashboard',
+      path: '/dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
       meta: { title: '信息面板', icon: 'dashboard' }
@@ -128,24 +128,29 @@ export const constantRoutes = [
 
 export const asyncRouterMap = [
   {
-    path: '/admin',
+    path: '/mine',
     component: Layout,
-    redirect: '/admin/user',
     name: 'Admin',
     alwaysShow: true,
-    meta: { title: '管理员功能', icon: 'admin', roles: ['admin'] },
+    meta: { title: '我的', icon: 'admin' },
     children: [
+      {
+        path: 'center',
+        name: '个人中心',
+        component: () => import('@/views/center/index'),
+        meta: { title: '个人中心', icon: 'admin-user' }
+      },
       {
         path: 'admin-user',
         name: '用户管理',
         component: () => import('@/views/admin/user'),
-        meta: { title: '用户管理', icon: 'admin-user', noCache: true }
+        meta: { title: '用户管理', icon: 'admin-user', roles: ['admin'] }
       },
       {
         path: 'admin-publish',
-        name: '信息发布',
+        name: '公告发布',
         component: () => import('@/views/admin/publish'),
-        meta: { title: '信息发布', icon: 'publish', noCache: true }
+        meta: { title: '公告发布', icon: 'publish', roles: ['admin'] }
       }
     ]
   },

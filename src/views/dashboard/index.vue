@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { getHomeData } from '@/api/visual'
+import { getNotices, readNotice } from '@/api/notice'
 import { formatTime } from '@/utils/index'
 import echarts from 'echarts'
 
@@ -46,9 +46,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'name'
-    ]),
     updateTime() {
       return formatTime(this.time)
     }
@@ -67,9 +64,31 @@ export default {
         this.time = parseInt(res.time)
         this.drawEchart(jobs, res.grow)
       })
+      getNotices().then(res => {
+        const notices = res.message
+        if (!notices.length) return
+        const notice = notices.pop()
+        const username = localStorage.getItem('username')
+        // console.log(notice, username)
+        if (!notice.reader.includes(username)) {
+          this.$notify({
+            title: '公告',
+            message: notice.content,
+            duration: 0,
+            offset: 40,
+            onClose() {
+              const id = notice._id
+              console.log(id, username)
+              readNotice({ id, username }).then(res => {
+                // console.log(res)
+              })
+            }
+          })
+        }
+      })
     },
     drawEchart(jobs, grow) {
-      console.log(grow)
+      // console.log(grow)
       const pie = echarts.init(document.getElementById('pie'))
       const line = echarts.init(document.getElementById('line'))
       const lineOption = {

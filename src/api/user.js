@@ -54,3 +54,19 @@ export function deleteUser(data) {
     data
   })
 }
+
+export function getQnToken() {
+  return request({
+    url: '/token',
+    method: 'get'
+  })
+}
+
+export function changeInfo(data) {
+  return request({
+    url: '/user/changeInfo',
+    method: 'post',
+    data
+  })
+}
+

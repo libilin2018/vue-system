@@ -1,21 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="select">
-      <el-select
-        v-model="currentJob"
-        placeholder="请选择"
-        class="select-job"
-        @change="handleJobChange"
-      >
-        <el-option
-          v-for="item in jobOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
-    </div>
+    <select-job @draw="getMapData"></select-job>
     <div id="map"></div>
   </div>
 </template>
@@ -24,37 +9,21 @@
 import echarts from 'echarts'
 import 'echarts/extension/bmap/bmap'
 import { geoCoordMap } from '@/json/map'
-import { getHomeData, getMap } from '@/api/visual'
+import { getMap } from '@/api/visual'
 import { formatData, formatTime } from '@/utils/index'
+import SelectJob from '@/components/SelectJob'
 
 export default {
+  components: {
+    SelectJob
+  },
   data() {
     return {
-      currentJob: '',
-      jobOptions: []
     }
   },
   mounted() {
-    this.init()
   },
   methods: {
-    init() {
-      getHomeData().then(res => {
-        res = res.message
-        const jobs = res.jobs
-        for (let i = 0; i < jobs.length; i++) {
-          const name = jobs[i].name
-          jobs[i].label = jobs[i].value = name
-        }
-        const currentJob = jobs[0].name
-        this.jobOptions = jobs
-        this.currentJob = currentJob
-        this.getMapData(currentJob)
-        console.log(jobs)
-      })
-      // this.jobData = data
-      // this.drawMap()
-    },
     drawMap(name, data, time) {
       const oldMap = echarts.getInstanceByDom(document.getElementById('map'))
       if (oldMap) {
@@ -263,15 +232,12 @@ export default {
       }
       map.setOption(option)
     },
-    handleJobChange(name) {
-      this.getMapData(name)
-    },
     getMapData(name) {
-      console.log(name)
+      // console.log(name)
       getMap({ name }).then(res => {
         res = res.message
         const data = formatData(res)
-        console.log(data)
+        // console.log(data)
         this.drawMap(name, data, res.time)
       })
     }
@@ -280,9 +246,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
- .select {
-   padding-bottom: 10px;
- }
   #map {
     width: 100%;
     height: calc(100vh - 120px);

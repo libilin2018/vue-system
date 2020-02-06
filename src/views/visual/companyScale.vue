@@ -1,21 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="select">
-      <el-select
-        v-model="currentJob"
-        placeholder="请选择"
-        class="select-job"
-        @change="handleJobChange"
-      >
-        <el-option
-          v-for="item in jobOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
-    </div>
+    <select-job @draw="getMapData"></select-job>
     <div class="draw">
       <div id="map1"></div>
       <div id="map2"></div>
@@ -25,30 +10,21 @@
 
 <script>
 import echarts from 'echarts'
-import { getHomeData, getCompanyscale } from '@/api/visual'
-import { formatData, formatSelectData } from '@/utils/index'
+import { getCompanyscale } from '@/api/visual'
+import { formatData } from '@/utils/index'
+import SelectJob from '@/components/SelectJob'
 
 export default {
+  components: {
+    SelectJob
+  },
   data() {
     return {
-      currentJob: '',
-      jobOptions: []
     }
   },
   mounted() {
-    this.init()
   },
   methods: {
-    init() {
-      getHomeData().then(res => {
-        res = res.message
-        const jobs = formatSelectData(res.jobs)
-        const currentJob = jobs[0].label
-        this.jobOptions = jobs
-        this.currentJob = currentJob
-        this.getMapData(currentJob)
-      })
-    },
     drawMap(name, data, pieData) {
       const oldMap = echarts.getInstanceByDom(document.getElementById('map1'))
       if (oldMap) {
@@ -138,11 +114,8 @@ export default {
       map1.setOption(option1)
       map2.setOption(option2)
     },
-    handleJobChange(val) {
-      this.getMapData(val)
-    },
     getMapData(name) {
-      console.log(name)
+      // console.log(name)
       getCompanyscale({ name }).then(res => {
         res = res.message
         const pieData = formatData(res)
@@ -154,9 +127,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
- .select {
-   padding-bottom: 20px;
- }
   .draw {
     display: flex;
     width: 100%;

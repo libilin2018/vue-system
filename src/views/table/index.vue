@@ -86,7 +86,7 @@
       <el-table-column label="" width="110" align="center" class-name="table-btns">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-menu" size="mini" title="更多信息" @click="handleDialogClick(scope.row)"></el-button>
-          <el-button v-if="roles.includes('admin')" type="danger" icon="el-icon-delete" size="mini" title="删除" @click="handleDelClick(scope.row, scope.$index, list)"></el-button>
+          <el-button v-permission="['admin', 'super-admin']" type="danger" icon="el-icon-delete" size="mini" title="删除" @click="handleDelClick(scope.row, scope.$index, list)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -155,7 +155,7 @@ export default {
     }
   },
   created() {
-    this.init()
+    // this.init()
     this.fetchData()
   },
   methods: {
@@ -214,12 +214,12 @@ export default {
       this.getRawData(name, 1)
     },
     handleDialogClick(item) {
-      console.log(item)
+      // console.log(item)
       this.jobForm = item
       this.dialogJobVisible = true
     },
     handleEditEmit() {
-      console.log(this.jobForm)
+      // console.log(this.jobForm)
     },
     handleDelClick(item, index, rows) {
       // 删除数据操作

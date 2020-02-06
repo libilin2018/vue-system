@@ -133,7 +133,8 @@ export default {
     },
     handleLogin() {
       this.$store.dispatch('user/login', this.loginForm).then(() => {
-        this.$router.push({ path: this.redirect || '/' })
+        const redirect = this.redirect.indexOf('/mine') > -1 ? '/' : this.redirect
+        this.$router.push({ path: redirect || '/' })
         this.loading = false
       }).catch(() => {
         this.loading = false
