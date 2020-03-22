@@ -5,7 +5,7 @@
       <el-form-item label="头像">
         <img class="avatar" :src="infoForm.avatar" alt="">
         <el-upload
-          action="http://up-z2.qiniup.com"
+          :action="postLink"
           :on-success="uploadSuccess"
           :limit="1"
           :data="postData"
@@ -51,10 +51,12 @@ export default {
       infoForm: {
         roles: []
       },
-      postData: {}
+      postData: {},
+      postLink: ''
     }
   },
   mounted() {
+    this.postLink = 'http://localhost:2200' + process.env.VUE_APP_BASE_API + '/upload'
     this.init()
   },
   methods: {
@@ -67,10 +69,14 @@ export default {
       })
     },
     uploadSuccess(res) {
-      const key = res.key
-      const host = 'http://q4wwil6d1.bkt.clouddn.com/'
-      const pre = '-center'
-      this.infoForm.avatar = host + key + pre
+      // 七牛云上传
+      // const key = res.key
+      // const host = 'http://localhost:2200'
+      // const pre = '-center'
+      // this.infoForm.avatar = host + key + pre
+      // 图片读取
+      const host = 'http://localhost:2200' + process.env.VUE_APP_BASE_API + '/picture?path=' + res.data.url
+      this.infoForm.avatar = host
     },
     handleInput() {
       // console.log(this.infoForm)
@@ -78,7 +84,7 @@ export default {
     onSubmit() {
       const username = localStorage.getItem('username')
       const info = this.infoForm
-      // console.log(username, info)
+      console.log(info)
       changeInfo({ username, info }).then(res => {
         this.$message({ type: 'success', message: '修改成功' })
         this.$store.dispatch('user/getInfo')
